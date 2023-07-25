@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,7 +14,16 @@ const App = () => {
   })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
+  const [notitfication, setNotification] = useState({
+    message: '',
+    type: '',
+  })
+  const setNotificationHandler = (message, type) => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification({ message: '', type: '' })
+    }, 2000)
+  }
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
@@ -53,10 +63,12 @@ const App = () => {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
       blogService.setToken(user.token)
+      setNotificationHandler('Successfully logged in', 'success')
       setUser(user)
       setUsername('')
       setPassword('')
     } catch (err) {
+      setNotificationHandler('Wrong username or password', 'error')
       console.log(err)
     }
   }
@@ -86,6 +98,10 @@ const App = () => {
     }
     try {
       const returnedBlog = await blogService.createNewBlog(blogObject)
+      setNotificationHandler(
+        `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+        `success`
+      )
       setBlogs(blogs.concat(returnedBlog))
       setNewBlog({
         title: '',
@@ -93,7 +109,7 @@ const App = () => {
         url: '',
       })
     } catch (err) {
-      console.log(err.message)
+      setNotificationHandler('Error creating blog', 'error')
     }
   }
 
@@ -103,11 +119,18 @@ const App = () => {
 
   const logOutHandler = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
+    setNotificationHandler('Logged out', 'error')
+
     setUser(null)
   }
 
   return (
     <div>
+      {notitfication.message && (
+        <div className={`notifications ${notitfication.type}`}>
+          {notitfication.message}
+        </div>
+      )}
       {user === null ? (
         loginForm()
       ) : (
