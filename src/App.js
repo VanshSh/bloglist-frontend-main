@@ -8,6 +8,7 @@ import NewBlogForm from './components/NewBlogForm'
 
 const App = () => {
   const [user, setUser] = useState(null)
+
   const [allBlogs, setAllBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -28,7 +29,6 @@ const App = () => {
       setUser(user)
     }
   }, [])
-
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
