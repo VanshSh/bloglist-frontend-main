@@ -3,15 +3,12 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
+import Togglable from './components/TogglableComponent'
+import NewBlogForm from './components/NewBlogForm'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [newBlog, setNewBlog] = useState({
-    title: '',
-    author: '',
-    url: '',
-  })
+  const [allBlogs, setAllBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [notitfication, setNotification] = useState({
@@ -29,7 +26,6 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      blogService.setToken(user.token)
     }
   }, [])
 
@@ -72,49 +68,9 @@ const App = () => {
       console.log(err)
     }
   }
-  const newBlogForm = () => (
-    <form onSubmit={addBlog}>
-      title:{' '}
-      <input name='title' value={newBlog.title} onChange={handleBlogChange} />
-      <br />
-      author:{' '}
-      <input name='author' value={newBlog.author} onChange={handleBlogChange} />
-      <br />
-      url: <input name='url' value={newBlog.url} onChange={handleBlogChange} />
-      <br />
-      <button type='submit'>create</button>
-    </form>
-  )
-  const handleBlogChange = (event) => {
-    const { name, value } = event.target
-    setNewBlog({ ...newBlog, [name]: value })
-  }
-  const addBlog = async (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: newBlog.title,
-      author: newBlog.author,
-      url: newBlog.url,
-    }
-    try {
-      const returnedBlog = await blogService.createNewBlog(blogObject)
-      setNotificationHandler(
-        `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-        `success`
-      )
-      setBlogs(blogs.concat(returnedBlog))
-      setNewBlog({
-        title: '',
-        author: '',
-        url: '',
-      })
-    } catch (err) {
-      setNotificationHandler('Error creating blog', 'error')
-    }
-  }
 
   useEffect(() => {
-    blogService.getAll(user?.token).then((blogs) => setBlogs(blogs))
+    blogService.getAll(user?.token).then((blogs) => setAllBlogs(blogs))
   }, [user?.token])
 
   const logOutHandler = () => {
@@ -142,10 +98,16 @@ const App = () => {
 
           <div>
             <h3>Create new blog</h3>
-            {newBlogForm()}
+            <Togglable buttonLabel='Create new blog'>
+              <NewBlogForm
+                setNotificationHandler={setNotificationHandler}
+                setAllBlogs={setAllBlogs}
+                allBlogs={allBlogs}
+              />
+            </Togglable>
           </div>
           <br />
-          {blogs.map((blog) => (
+          {allBlogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
         </div>
