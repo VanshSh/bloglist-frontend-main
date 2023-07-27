@@ -9,6 +9,7 @@ import NewBlogForm from './components/NewBlogForm'
 const App = () => {
   const [user, setUser] = useState(null)
   const [allBlogs, setAllBlogs] = useState([])
+  const [sortedBlogs, setSortedBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [notitfication, setNotification] = useState({
@@ -29,7 +30,6 @@ const App = () => {
     }
   }, [])
 
-  const sortedBlogListBasedOnLikes = allBlogs.sort((a, b) => b.likes - a.likes)
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -80,7 +80,31 @@ const App = () => {
 
     setUser(null)
   }
+  const deleteBlogHandler = async (blog) => {
+    const confirmResult = window.confirm(
+      `Remove blog ${blog.title} by ${blog.author}?`
+    )
+    if (!confirmResult) {
+      console.log('Delete operation cancelled by the user.')
+      return // Exit the function if the user cancels the delete operation.
+    }
 
+    try {
+      const response = await blogService.deleteBlog(blog.id)
+      if (response.status === 204) {
+        setNotificationHandler('Blog deleted successfully', 'success')
+        setAllBlogs(allBlogs.filter((blogItem) => blogItem.id !== blog.id))
+      }
+    } catch (error) {
+      setNotificationHandler('Not authorized to delete this blog.', 'error')
+    }
+  }
+  useEffect(() => {
+    const sortedBlogListBasedOnLikes = allBlogs.sort(
+      (a, b) => b.likes - a.likes
+    )
+    setSortedBlogs(sortedBlogListBasedOnLikes)
+  }, [allBlogs])
   return (
     <div>
       {notitfication.message && (
@@ -108,8 +132,8 @@ const App = () => {
             </Togglable>
           </div>
           <br />
-          {sortedBlogListBasedOnLikes.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+          {sortedBlogs.map((blog) => (
+            <Blog deleteHandler={deleteBlogHandler} key={blog.id} blog={blog} />
           ))}
         </div>
       )}

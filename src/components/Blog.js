@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
-const Blog = ({ blog }) => {
+const Blog = ({ blog, deleteHandler }) => {
   const [showFullDetails, setShowFullDetails] = useState(false)
   const blogStyle = {
     padding: '.5rem',
@@ -15,6 +15,7 @@ const Blog = ({ blog }) => {
     setLikes((prev) => prev + 1)
     await blogService.updateBlog(blog, likes + 1)
   }
+
   const buttonTxt = showFullDetails ? 'hide' : 'view'
   return (
     <div style={blogStyle}>
@@ -33,7 +34,9 @@ const Blog = ({ blog }) => {
               <button onClick={() => handleLike(blog)}>like</button>
             </p>
             <p>{blog.author}</p>
-            <button className='removebtn'>remove</button>
+            <button className='removebtn' onClick={() => deleteHandler(blog)}>
+              remove
+            </button>
           </div>
         )}
       </div>
