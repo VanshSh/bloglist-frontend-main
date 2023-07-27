@@ -19,3 +19,11 @@
     color: green;
     border:6px solid green
 }
+
+.removebtn{
+    background: blue;
+    color:#fff;
+    border-radius: 5px;
+    padding: .2rem 1rem;
+    border:none;
+}

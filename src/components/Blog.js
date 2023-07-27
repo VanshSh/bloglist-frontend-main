@@ -12,8 +12,8 @@ const Blog = ({ blog }) => {
   const [likes, setLikes] = useState(blog.likes)
 
   const handleLike = async () => {
-    const updateBlog = await blogService.updateBlog(blog, likes)
-    setLikes(updateBlog.likes)
+    setLikes((prev) => prev + 1)
+    await blogService.updateBlog(blog, likes + 1)
   }
   const buttonTxt = showFullDetails ? 'hide' : 'view'
   return (
@@ -33,6 +33,7 @@ const Blog = ({ blog }) => {
               <button onClick={() => handleLike(blog)}>like</button>
             </p>
             <p>{blog.author}</p>
+            <button className='removebtn'>remove</button>
           </div>
         )}
       </div>

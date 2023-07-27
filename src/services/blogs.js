@@ -25,10 +25,10 @@ const createNewBlog = async (newBlog) => {
   return response.data
 }
 
-const updateBlog = async (newBlog) => {
+const updateBlog = async (newBlog, like) => {
   const newBlogObj = {
     user: newBlog.user.id,
-    likes: newBlog.likes + 1,
+    likes: like,
     author: newBlog.author,
     title: newBlog.title,
     url: newBlog.url,
