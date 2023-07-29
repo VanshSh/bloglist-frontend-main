@@ -1,47 +1,58 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import blogService from '../services/blogs'
-const Blog = ({ blog, deleteHandler }) => {
-  const [showFullDetails, setShowFullDetails] = useState(false)
-  const blogStyle = {
-    padding: '.5rem',
-    borderRadius: '10px',
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
+
+const Blog = (props) => {
+  const blog = props.blog
+  const [blogObject, setBlogObject] = useState(blog)
+  const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
+  const showWhenVisible = { display: visible ? '' : 'none' }
+
+  const toggleVisibility = () => {
+    setVisible(!visible)
+  }
+  const removeBlog = () => props.deleteHandler(blog)
 
   const handleLike = async () => {
     setLikes((prev) => prev + 1)
     await blogService.updateBlog(blog, likes + 1)
   }
 
-  const buttonTxt = showFullDetails ? 'hide' : 'view'
+  const buttonLabel = visible ? 'hide' : 'view'
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5,
+  }
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       <div>
         <p>
-          {blog.title}{' '}
-          <button onClick={() => setShowFullDetails((prev) => !prev)}>
-            {buttonTxt}
+          {blog.title} - {blog.author}{' '}
+          <button onClick={toggleVisibility}>{buttonLabel}</button>
+        </p>
+      </div>
+      <div style={showWhenVisible}>
+        <p>{blog.url}</p>
+        <p>
+          {likes}{' '}
+          <button id='like-button' onClick={handleLike}>
+            like
           </button>
         </p>
-        {showFullDetails && (
-          <div>
-            <a href={blog.url}>{blog.url}</a>
-            <p>
-              likes: {likes}{' '}
-              <button onClick={() => handleLike(blog)}>like</button>
-            </p>
-            <p>{blog.author}</p>
-            <button className='removebtn' onClick={() => deleteHandler(blog)}>
-              remove
-            </button>
-          </div>
-        )}
+        <button id='remove' onClick={removeBlog}>
+          remove
+        </button>
       </div>
     </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
 }
 
 export default Blog
