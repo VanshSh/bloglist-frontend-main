@@ -45,12 +45,28 @@ const NewBlogForm = ({ setNotificationHandler, setAllBlogs, allBlogs }) => {
   const newBlogForm = () => (
     <form onSubmit={addBlog}>
       title:{' '}
-      <input name='title' value={newBlog.title} onChange={handleBlogChange} />
+      <input
+        placeholder='title'
+        name='title'
+        value={newBlog.title}
+        onChange={handleBlogChange}
+      />
       <br />
       author:{' '}
-      <input name='author' value={newBlog.author} onChange={handleBlogChange} />
+      <input
+        placeholder='author'
+        name='author'
+        value={newBlog.author}
+        onChange={handleBlogChange}
+      />
       <br />
-      url: <input name='url' value={newBlog.url} onChange={handleBlogChange} />
+      url:{' '}
+      <input
+        name='url'
+        placeholder='url'
+        value={newBlog.url}
+        onChange={handleBlogChange}
+      />
       <br />
       <button type='submit'>create</button>
     </form>
