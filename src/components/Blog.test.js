@@ -4,6 +4,7 @@ import { render, fireEvent, screen } from '@testing-library/react'
 import blogService from '../services/blogs'
 import Blog from './Blog'
 jest.mock('../services/blogs')
+
 describe('Blog view tests', () => {
   let blog = {
     title: 'React patterns',
@@ -18,37 +19,21 @@ describe('Blog view tests', () => {
     id: '64bc163dd9dcf8d30229ffb8',
   }
 
-  let mockUpdateBlog = jest.fn()
-  let mockDeleteBlog = jest.fn()
-
   test('renders title and author', () => {
-    const view = render(
-      <Blog
-        blog={blog}
-        updateBlog={mockUpdateBlog}
-        deleteBlog={mockDeleteBlog}
-      />
-    )
+    const view = render(<Blog blog={blog} />)
     expect(view.container).toHaveTextContent('React patterns - Michael Chan')
   })
-  test('clicking the view button displays url and number of likes', () => {
-    const view = render(
-      <Blog
-        blog={blog}
-        updateBlog={mockUpdateBlog}
-        deleteBlog={mockDeleteBlog}
-      />
-    )
 
+  test('clicking the view button displays url and number of likes', () => {
+    const view = render(<Blog blog={blog} />)
     const button = screen.getByText('view')
     fireEvent.click(button)
-
     expect(view.container).toHaveTextContent('https://reactpatterns.com/')
     expect(view.container).toHaveTextContent('7')
   })
 
   test('clicking the like button twice calls the event handler twice', async () => {
-    render(<Blog blog={blog} handleLike={mockUpdateBlog} />)
+    render(<Blog blog={blog} />)
 
     // Find the like button
     const likeButton = screen.getByText('like')
