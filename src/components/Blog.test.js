@@ -24,4 +24,16 @@ describe('Blog view tests', () => {
     )
     expect(view.container).toHaveTextContent('React patterns - Michael Chan')
   })
+
+  test('check the URL and number of likes', () => {
+    const view = render(
+      <Blog
+        blog={blog}
+        updateBlog={mockUpdateBlog}
+        deleteBlog={mockDeleteBlog}
+      />
+    )
+    expect(view.container).toHaveTextContent('https://reactpatterns.com/')
+    expect(view.container).toHaveTextContent('7')
+  })
 })

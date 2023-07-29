@@ -4,7 +4,6 @@ import blogService from '../services/blogs'
 
 const Blog = (props) => {
   const blog = props.blog
-  const [blogObject, setBlogObject] = useState(blog)
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
   const showWhenVisible = { display: visible ? '' : 'none' }
@@ -21,11 +20,11 @@ const Blog = (props) => {
 
   const buttonLabel = visible ? 'hide' : 'view'
   const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
+    padding: 10,
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
+    borderRadius: '5px',
   }
   return (
     <div style={blogStyle} className='blog'>
