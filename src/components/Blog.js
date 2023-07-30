@@ -5,6 +5,7 @@ import blogService from '../services/blogs'
 const Blog = (props) => {
   const blog = props.blog
   let showDeleteBtn = props.showDeleteBtnValue
+  console.log(showDeleteBtn)
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
   const showWhenVisible = { display: visible ? '' : 'none' }
