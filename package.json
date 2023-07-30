@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/user-event": "^13.5.0",
     "axios": "^1.2.3",
     "jest": "^29.6.2",
     "prop-types": "^15.8.1",
@@ -17,7 +16,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!axios)/\"",
     "eject": "react-scripts eject",
-    "eslint": "eslint --fix ."
+    "eslint": "eslint --fix .",
+    "cypress:open": "cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -41,6 +41,8 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.0.0",
+    "cypress": "^12.17.2",
+    "eslint-plugin-cypress": "^2.13.3",
     "eslint-plugin-jest": "^27.2.3"
   }
 }

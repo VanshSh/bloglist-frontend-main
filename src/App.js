@@ -36,6 +36,7 @@ const App = () => {
         username
         <input
           type='text'
+          id='username'
           value={username}
           name='Username'
           onChange={({ target }) => setUsername(target.value)}
@@ -46,11 +47,14 @@ const App = () => {
         <input
           type='password'
           value={password}
+          id='password'
           name='Password'
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button type='submit'>login</button>
+      <button id='loginbtn' type='submit'>
+        login
+      </button>
     </form>
   )
 
@@ -70,8 +74,21 @@ const App = () => {
     }
   }
 
+  const fetchBlogs = async (userToken) => {
+    try {
+      const blogs = await blogService.getAll(userToken)
+      setAllBlogs(blogs)
+    } catch (error) {
+      // Handle the error if needed
+      console.error('Error fetching blogs:', error)
+    }
+  }
+
   useEffect(() => {
-    blogService.getAll(user?.token).then((blogs) => setAllBlogs(blogs))
+    const user = JSON.parse(localStorage.getItem('loggedBlogAppUser'))
+    if (user?.token) {
+      fetchBlogs(user.token)
+    }
   }, [user?.token])
 
   const logOutHandler = () => {
