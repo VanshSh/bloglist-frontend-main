@@ -122,6 +122,13 @@ const App = () => {
     )
     setSortedBlogs(sortedBlogListBasedOnLikes)
   }, [allBlogs])
+
+  const showDeleteBtn = (blog) => {
+    if (user?.username === blog?.user?.username) {
+      return true
+    }
+    return false
+  }
   return (
     <div>
       {notitfication.message && (
@@ -153,7 +160,12 @@ const App = () => {
           </div>
           <br />
           {sortedBlogs.map((blog) => (
-            <Blog deleteHandler={deleteBlogHandler} key={blog.id} blog={blog} />
+            <Blog
+              deleteHandler={deleteBlogHandler}
+              key={blog.id}
+              blog={blog}
+              showDeleteBtnValue={showDeleteBtn(blog)}
+            />
           ))}
         </div>
       )}

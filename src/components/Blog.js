@@ -4,6 +4,7 @@ import blogService from '../services/blogs'
 
 const Blog = (props) => {
   const blog = props.blog
+  let showDeleteBtn = props.showDeleteBtnValue
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
   const showWhenVisible = { display: visible ? '' : 'none' }
@@ -42,9 +43,11 @@ const Blog = (props) => {
             like
           </button>
         </p>
-        <button id='remove' onClick={removeBlog}>
-          remove
-        </button>
+        {showDeleteBtn && (
+          <button id='remove' onClick={removeBlog}>
+            remove
+          </button>
+        )}
       </div>
     </div>
   )

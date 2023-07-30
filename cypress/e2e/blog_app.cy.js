@@ -67,7 +67,7 @@ describe('Blog app', function () {
       cy.get('#like-button').click()
       cy.contains('1')
     })
-    it.only('User who created the blog can delete it', function () {
+    it('User who created the blog can delete it', function () {
       cy.get('#createnewblog').click()
       cy.get('#newblogtitle').type('Test Blog')
       cy.get('#newblogauthor').type('Test Author')
