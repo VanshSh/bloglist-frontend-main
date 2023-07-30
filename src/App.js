@@ -125,7 +125,10 @@ const App = () => {
   return (
     <div>
       {notitfication.message && (
-        <div className={`notifications ${notitfication.type}`}>
+        <div
+          id='notificationdiv'
+          className={`notifications ${notitfication.type}`}
+        >
           {notitfication.message}
         </div>
       )}
