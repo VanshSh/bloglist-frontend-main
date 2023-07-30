@@ -104,7 +104,7 @@ describe('Blog app', function () {
         cy.contains('test3').parent().parent().as('blog3')
       })
 
-      it.only('they are ordered by number of likes', function () {
+      it('they are ordered by number of likes', function () {
         cy.get('@blog1').contains('view').click()
         cy.get('@blog2').contains('view').click()
         cy.get('@blog3').contains('view').click()
