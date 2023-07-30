@@ -47,7 +47,7 @@ describe('Blog app', function () {
       cy.get('#loginbtn').click()
     })
 
-    it.only('A blog can be created', function () {
+    it('A blog can be created', function () {
       cy.get('#createnewblog').click()
       cy.get('#newblogtitle').type('Test Blog')
       cy.get('#newblogauthor').type('Test Author')
@@ -55,6 +55,27 @@ describe('Blog app', function () {
       cy.get('#submitnewblogbtn').click()
 
       cy.get('#notificationdiv').should('exist')
+    })
+
+    it('A blog can be liked', function () {
+      cy.get('#createnewblog').click()
+      cy.get('#newblogtitle').type('Test Blog')
+      cy.get('#newblogauthor').type('Test Author')
+      cy.get('#newblogurl').type('https://testurl.com')
+      cy.get('#submitnewblogbtn').click()
+      cy.contains('view').click()
+      cy.get('#like-button').click()
+      cy.contains('1')
+    })
+    it.only('User who created the blog can delete it', function () {
+      cy.get('#createnewblog').click()
+      cy.get('#newblogtitle').type('Test Blog')
+      cy.get('#newblogauthor').type('Test Author')
+      cy.get('#newblogurl').type('https://testurl.com')
+      cy.get('#submitnewblogbtn').click()
+      cy.contains('view').click()
+      cy.get('#remove').click()
+      cy.get('#notificationdiv').should('contain', 'Blog deleted successfully')
     })
   })
 })
