@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const Blog = (props) => {
   const blog = props.blog
-  let showDeleteBtn = true
+
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
   const showWhenVisible = { display: visible ? '' : 'none' }
@@ -29,6 +29,14 @@ const Blog = (props) => {
     marginBottom: 5,
     borderRadius: '5px',
   }
+
+  const showDeleteBtnFunc = (blog) => {
+    if (props.user?.username === blog?.user?.username) {
+      return true
+    }
+    return false
+  }
+
   return (
     <div style={blogStyle} className='blog'>
       <div>
@@ -45,7 +53,7 @@ const Blog = (props) => {
             like
           </button>
         </p>
-        {showDeleteBtn && (
+        {showDeleteBtnFunc(blog) && (
           <button id='remove' onClick={removeBlog}>
             remove
           </button>

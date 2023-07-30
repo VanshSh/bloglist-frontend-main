@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import blogService from '../services/blogs'
-const NewBlogForm = ({ setNotificationHandler, setAllBlogs, allBlogs }) => {
+const NewBlogForm = ({
+  setNotificationHandler,
+
+  fetchBlogs,
+}) => {
   const [newBlog, setNewBlog] = useState({
     title: '',
     author: '',
@@ -22,11 +26,15 @@ const NewBlogForm = ({ setNotificationHandler, setAllBlogs, allBlogs }) => {
     }
     try {
       const returnedBlog = await blogService.createNewBlog(blogObject)
-      setNotificationHandler(
-        `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-        `success`
-      )
-      setAllBlogs(allBlogs.concat(returnedBlog))
+      if (returnedBlog) {
+        fetchBlogs()
+        setNotificationHandler(
+          `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+          `success`
+        )
+      } else {
+        setNotificationHandler('Error creating blog', 'error')
+      }
       setNewBlog({
         title: '',
         author: '',

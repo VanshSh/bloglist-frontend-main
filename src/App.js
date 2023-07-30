@@ -12,7 +12,6 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [allBlogs, setAllBlogs] = useState([])
   const [sortedBlogs, setSortedBlogs] = useState([])
-
   const [notitfication, setNotification] = useState({
     message: '',
     type: '',
@@ -85,7 +84,12 @@ const App = () => {
   async function fetchBlogs(userToken) {
     try {
       const blogs = await blogService.getAll(userToken)
-      setAllBlogs(blogs)
+      if (blogs) {
+        setAllBlogs(blogs)
+        setSortedBlogs(blogs.sort((a, b) => b.likes - a.likes))
+      } else {
+        setNotificationHandler('Error fetching blogs', 'error')
+      }
     } catch (error) {
       // Handle the error if needed
       console.error('Error fetching blogs:', error)
@@ -121,15 +125,7 @@ const App = () => {
     }
   }
 
-  // Show delete btn
-  const showDeleteBtn = (blog) => {
-    if (user?.username === blog?.user?.username) {
-      return true
-    }
-    return false
-  }
-
-  // Useeffect to check if user is logged in
+  // UseEffect to check if user is logged in
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
@@ -138,20 +134,13 @@ const App = () => {
     }
   }, [])
 
-  // Useeffect to fetch all blogs
+  // UseEffect to fetch all blogs
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('loggedBlogAppUser'))
     if (user?.token) {
       fetchBlogs(user.token)
     }
-  }, [user?.token])
-
-  useEffect(() => {
-    const sortedBlogListBasedOnLikes = allBlogs.sort(
-      (a, b) => b.likes - a.likes
-    )
-    setSortedBlogs(sortedBlogListBasedOnLikes)
-  }, [allBlogs])
+  }, [])
 
   return (
     <div>
@@ -177,8 +166,7 @@ const App = () => {
             <Togglable buttonLabel='Create new blog'>
               <NewBlogForm
                 setNotificationHandler={setNotificationHandler}
-                setAllBlogs={setAllBlogs}
-                allBlogs={allBlogs}
+                fetchBlogs={() => fetchBlogs(user.token)}
               />
             </Togglable>
           </div>
@@ -189,6 +177,7 @@ const App = () => {
               blog={blog}
               deleteHandler={deleteBlogHandler}
               likeHandler={handleLike}
+              user={user}
             />
           ))}
         </div>
