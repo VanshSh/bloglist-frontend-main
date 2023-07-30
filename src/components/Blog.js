@@ -1,25 +1,26 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import blogService from '../services/blogs'
 
 const Blog = (props) => {
   const blog = props.blog
-  let showDeleteBtn = props.showDeleteBtnValue
-  console.log(showDeleteBtn)
+  let showDeleteBtn = true
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
   const showWhenVisible = { display: visible ? '' : 'none' }
 
+  // Toggling visibility
   const toggleVisibility = () => {
     setVisible(!visible)
   }
+
+  // Delete blog
   const removeBlog = () => props.deleteHandler(blog)
 
-  const handleLike = async () => {
-    setLikes((prev) => prev + 1)
-    await blogService.updateBlog(blog, likes + 1)
+  // Increase likes
+  const handleLike = () => {
+    setLikes(likes + 1)
+    props.likeHandler(blog, likes)
   }
-
   const buttonLabel = visible ? 'hide' : 'view'
   const blogStyle = {
     padding: 10,

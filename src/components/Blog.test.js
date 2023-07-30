@@ -19,6 +19,8 @@ describe('Blog view tests', () => {
     id: '64bc163dd9dcf8d30229ffb8',
   }
 
+  const mockHandler = jest.fn()
+
   test('renders title and author', () => {
     const view = render(<Blog blog={blog} />)
     expect(view.container).toHaveTextContent('React patterns - Michael Chan')
@@ -33,7 +35,7 @@ describe('Blog view tests', () => {
   })
 
   test('clicking the like button twice calls the event handler twice', async () => {
-    render(<Blog blog={blog} />)
+    render(<Blog blog={blog} likeHandler={mockHandler} />)
 
     // Find the like button
     const likeButton = screen.getByText('like')
@@ -42,6 +44,6 @@ describe('Blog view tests', () => {
     fireEvent.click(likeButton)
     fireEvent.click(likeButton)
 
-    expect(blogService.updateBlog).toHaveBeenCalledTimes(2)
+    expect(mockHandler).toHaveBeenCalledTimes(2)
   })
 })

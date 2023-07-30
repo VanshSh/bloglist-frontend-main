@@ -8,28 +8,24 @@ import NewBlogForm from './components/NewBlogForm'
 
 const App = () => {
   const [user, setUser] = useState(null)
-  const [allBlogs, setAllBlogs] = useState([])
-  const [sortedBlogs, setSortedBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [allBlogs, setAllBlogs] = useState([])
+  const [sortedBlogs, setSortedBlogs] = useState([])
+
   const [notitfication, setNotification] = useState({
     message: '',
     type: '',
   })
+
+  // Notification Handler
   const setNotificationHandler = (message, type) => {
     setNotification({ message, type })
     setTimeout(() => {
       setNotification({ message: '', type: '' })
     }, 2000)
   }
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-    }
-  }, [])
-
+  // Login Form
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -58,6 +54,17 @@ const App = () => {
     </form>
   )
 
+  // Likes Handler
+  const handleLike = async (blog, likes) => {
+    const response = await blogService.updateBlog(blog, likes + 1)
+    if (response) {
+      fetchBlogs(user.token)
+    } else {
+      setNotificationHandler('Error updating likes', 'error')
+    }
+  }
+
+  // Login Handler
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -74,7 +81,8 @@ const App = () => {
     }
   }
 
-  const fetchBlogs = async (userToken) => {
+  // Get all blogs
+  async function fetchBlogs(userToken) {
     try {
       const blogs = await blogService.getAll(userToken)
       setAllBlogs(blogs)
@@ -84,19 +92,15 @@ const App = () => {
     }
   }
 
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('loggedBlogAppUser'))
-    if (user?.token) {
-      fetchBlogs(user.token)
-    }
-  }, [user?.token])
-
+  // Logout Handler
   const logOutHandler = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
     setNotificationHandler('Logged out', 'error')
 
     setUser(null)
   }
+
+  // Delete Handler
   const deleteBlogHandler = async (blog) => {
     const confirmResult = window.confirm(
       `Remove blog ${blog.title} by ${blog.author}?`
@@ -110,12 +114,38 @@ const App = () => {
       const response = await blogService.deleteBlog(blog.id)
       if (response.status === 204) {
         setNotificationHandler('Blog deleted successfully', 'success')
-        setAllBlogs(allBlogs.filter((blogItem) => blogItem.id !== blog.id))
+        fetchBlogs(user.token)
       }
     } catch (error) {
       setNotificationHandler('Not authorized to delete this blog.', 'error')
     }
   }
+
+  // Show delete btn
+  const showDeleteBtn = (blog) => {
+    if (user?.username === blog?.user?.username) {
+      return true
+    }
+    return false
+  }
+
+  // Useeffect to check if user is logged in
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+    }
+  }, [])
+
+  // Useeffect to fetch all blogs
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('loggedBlogAppUser'))
+    if (user?.token) {
+      fetchBlogs(user.token)
+    }
+  }, [user?.token])
+
   useEffect(() => {
     const sortedBlogListBasedOnLikes = allBlogs.sort(
       (a, b) => b.likes - a.likes
@@ -123,12 +153,6 @@ const App = () => {
     setSortedBlogs(sortedBlogListBasedOnLikes)
   }, [allBlogs])
 
-  const showDeleteBtn = (blog) => {
-    if (user?.username === blog?.user?.username) {
-      return true
-    }
-    return false
-  }
   return (
     <div>
       {notitfication.message && (
@@ -161,10 +185,10 @@ const App = () => {
           <br />
           {sortedBlogs.map((blog) => (
             <Blog
-              deleteHandler={deleteBlogHandler}
               key={blog.id}
               blog={blog}
-              showDeleteBtnValue={showDeleteBtn(blog)}
+              deleteHandler={deleteBlogHandler}
+              likeHandler={handleLike}
             />
           ))}
         </div>
