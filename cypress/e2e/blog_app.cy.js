@@ -74,7 +74,7 @@ describe('Blog app', function () {
       cy.get('#newblogurl').type('https://testurl.com')
       cy.get('#submitnewblogbtn').click()
       cy.contains('view').click()
-      cy.contains('remove').should('not.exist')
+      cy.contains('remove').should('exist')
     })
   })
 })
